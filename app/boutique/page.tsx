@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PRODUCT_IMAGES, PRODUCTS } from "@/lib/catalog";
+import { PRIMARY_PRODUCT_HREF, PRODUCT_IMAGES, PRODUCTS } from "@/lib/catalog";
 import { formatPriceMad, minPriceForProduct } from "@/lib/pricing";
 import type { Metadata } from "next";
 
@@ -29,7 +29,7 @@ export default function BoutiquePage() {
             يبدأ من {formatPriceMad(from)}
           </p>
           <div style={{ marginTop: "1.5rem", display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-            <Link href="/produit/lampe-selenite" className="btn-primary">
+            <Link href={PRIMARY_PRODUCT_HREF} className="btn-primary">
               اطلب الآن
             </Link>
             <Link href="/galerie" className="btn-ghost" style={{ border: "1px solid var(--glass-border)", borderRadius: "999px", padding: "0.65rem 1.35rem" }}>
@@ -49,26 +49,34 @@ export default function BoutiquePage() {
         </div>
       </section>
 
-      <h2 className="store-section-title">المنتجات</h2>
+      <h2 className="store-section-title">مجموعتنا الكاملة</h2>
       <div className="store-grid">
         {PRODUCTS.map((p) => (
           <article key={p.slug} className="product-card reveal">
-            <Link href={`/produit/${p.slug}`} className="product-card__media">
-              <Image src={p.coverSrc} alt={p.title} fill sizes="(max-width: 640px) 100vw, 360px" style={{ objectFit: "cover" }} />
-            </Link>
+            <div className="product-card__media-container">
+              {p.isFeatured && <span className="product-card__badge">مميز</span>}
+              <Link href={`/produit/${p.slug}`} className="product-card__media" aria-label={`عرض ${p.title}`}>
+                <Image src={p.coverSrc} alt={p.title} fill sizes="(max-width: 640px) 100vw, 360px" style={{ objectFit: "cover" }} />
+              </Link>
+            </div>
             <div className="product-card__body">
-              <h3 className="product-card__title">{p.title}</h3>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "0.5rem" }}>
+                <h3 className="product-card__title">{p.title}</h3>
+                <span style={{ fontSize: "0.65rem", color: "var(--text-subtle)", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: "0.3rem" }}>
+                  {p.category === "lamp" ? "مصباح" : p.category === "decor" ? "ديكور" : "طقوس"}
+                </span>
+              </div>
               <p className="product-card__summary">{p.summary}</p>
               <div className="product-card__thumbs" aria-hidden>
-                {p.thumbSrcs.map((src) => (
-                  <div key={src} className="product-card__thumb">
+                {p.thumbSrcs.map((src, idx) => (
+                  <div key={idx} className="product-card__thumb">
                     <Image src={src} alt="" fill sizes="40px" style={{ objectFit: "cover" }} />
                   </div>
                 ))}
               </div>
               <p className="product-card__price">من {formatPriceMad(from)}</p>
-              <Link href={`/produit/${p.slug}`} className="btn-primary" style={{ marginTop: "0.35rem", textAlign: "center" }}>
-                التفاصيل والشراء
+              <Link href={`/produit/${p.slug}`} className="btn-primary" style={{ marginTop: "0.35rem", textAlign: "center", width: "100%" }}>
+                التفاصيل والطلب
               </Link>
             </div>
           </article>

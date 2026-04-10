@@ -15,23 +15,24 @@ export default function ProductDetail({ product }: { product: StoreProduct }) {
   const [light, setLight] = useState<LampLight>("yellow");
   const [qty, setQty] = useState<LampQty>(1);
 
-  const active = PRODUCT_IMAGES[activeIdx];
-  const previewSrc = active?.src ?? product.coverSrc;
+  const activeIdxSafe = activeIdx < product.thumbSrcs.length ? activeIdx : 0;
+  const previewSrc = product.thumbSrcs[activeIdxSafe] ?? product.coverSrc;
+  const previewCaption = PRODUCT_IMAGES.find((i) => i.src === previewSrc)?.caption;
 
   const setThumb = (idx: number) => {
     setActiveIdx(idx);
-    const id = PRODUCT_IMAGES[idx]?.id;
-    if (id === "rgb") setLight("rgb");
-    else if (id === "yellow") setLight("yellow");
+    const src = product.thumbSrcs[idx];
+    if (src?.includes("rgb")) setLight("rgb");
+    else if (src?.includes("yellow")) setLight("yellow");
   };
 
   const setLightMode = (l: LampLight) => {
     setLight(l);
     if (l === "rgb") {
-      const j = PRODUCT_IMAGES.findIndex((i) => i.id === "rgb");
+      const j = product.thumbSrcs.findIndex((s) => s.includes("rgb"));
       if (j >= 0) setActiveIdx(j);
     } else {
-      const j = PRODUCT_IMAGES.findIndex((i) => i.id === "yellow");
+      const j = product.thumbSrcs.findIndex((s) => s.includes("yellow"));
       if (j >= 0) setActiveIdx(j);
     }
   };
@@ -63,7 +64,7 @@ export default function ProductDetail({ product }: { product: StoreProduct }) {
   };
 
   return (
-    <section className="reveal" style={{ paddingTop: "clamp(1.5rem, 4vw, 2.5rem)" }}>
+    <section className="reveal product-page" style={{ paddingTop: "clamp(1.5rem, 4vw, 2.5rem)" }}>
       <nav style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1.5rem" }}>
         <Link href="/boutique" style={{ color: "var(--accent)" }}>
           المتجر
@@ -74,7 +75,7 @@ export default function ProductDetail({ product }: { product: StoreProduct }) {
 
       <header style={{ marginBottom: "2rem", maxWidth: "40rem" }}>
         <span className="section-eyebrow" style={{ textAlign: "start", display: "block" }}>
-          منتج حرفي
+          {product.category === "lamp" ? "إضاءة حرفية" : product.category === "ritual" ? "قطعة روحية" : "ديكور طبيعي"}
         </span>
         <h1 style={{ fontSize: "clamp(1.75rem, 4vw, 2.35rem)", marginBottom: "0.75rem" }}>{product.title}</h1>
         <p style={{ color: "var(--text-muted)", lineHeight: 1.8 }}>{product.description}</p>
@@ -85,29 +86,28 @@ export default function ProductDetail({ product }: { product: StoreProduct }) {
           <div
             className="product-detail__gallery-main"
             style={{
-              boxShadow: light === "yellow" ? "var(--glow-yellow)" : "var(--glow-rgb)",
+              boxShadow: product.category === "lamp" ? (light === "yellow" ? "var(--glow-yellow)" : "var(--glow-rgb)") : "var(--shadow-soft)",
             }}
           >
-            <Image src={previewSrc} alt={active?.alt ?? product.title} fill sizes="(max-width: 900px) 100vw, 45vw" style={{ objectFit: "cover" }} priority />
+            <Image src={previewSrc} alt={product.title} fill sizes="(max-width: 900px) 100vw, 45vw" style={{ objectFit: "cover" }} priority />
           </div>
           <div className="product-detail__thumbs" role="tablist" aria-label="صور المنتج">
-            {PRODUCT_IMAGES.map((img, idx) => (
+            {product.thumbSrcs.map((src, idx) => (
               <button
-                key={img.id}
+                key={idx}
                 type="button"
                 className="product-detail__thumb"
-                data-active={idx === activeIdx ? "true" : "false"}
+                data-active={idx === activeIdxSafe ? "true" : "false"}
                 onClick={() => setThumb(idx)}
-                aria-label={img.caption}
-                aria-pressed={idx === activeIdx}
+                aria-pressed={idx === activeIdxSafe}
               >
-                <Image src={img.src} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
+                <Image src={src} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
               </button>
             ))}
           </div>
-          <p style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "var(--text-subtle)" }}>
-            {active?.caption ? `عرض: ${active.caption}` : null}
-          </p>
+          {previewCaption ? (
+            <p style={{ marginTop: "0.75rem", fontSize: "0.8rem", color: "var(--text-subtle)" }}>عرض: {previewCaption}</p>
+          ) : null}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>

@@ -16,7 +16,7 @@ export default function PanierView() {
   };
 
   return (
-    <div className="page-narrow reveal" style={{ maxWidth: 880 }}>
+    <div className="page-narrow reveal panier-page" style={{ maxWidth: 880 }}>
       <h1>سلة التسوق</h1>
       <p style={{ color: "var(--text-muted)", marginBottom: "2rem" }}>
         راجع التكوين ثم أرسل الطلب عبر واتساب. الدفع عند الاستلام.
@@ -33,18 +33,18 @@ export default function PanierView() {
         <>
           <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
             {lines.map((line) => (
-              <li key={line.id} className="glass-card" style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "1rem", alignItems: "center", padding: "1rem 1.15rem" }}>
-                <div style={{ position: "relative", width: 72, height: 72, borderRadius: "var(--radius-sm)", overflow: "hidden" }}>
+              <li key={line.id} className="glass-card cart-line" style={{ padding: "1rem 1.15rem" }}>
+                <div className="cart-line__thumb" style={{ position: "relative", width: 72, height: 72, borderRadius: "var(--radius-sm)", overflow: "hidden" }}>
                   <Image src={line.image} alt="" fill sizes="72px" style={{ objectFit: "cover" }} />
                 </div>
-                <div>
+                <div className="cart-line__details">
                   <p style={{ fontWeight: 700, marginBottom: "0.25rem" }}>{line.productTitle}</p>
                   <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
                     {SIZE_LABELS[line.size]} · {LIGHT_LABELS[line.light]} · الكمية {line.qty}
                   </p>
                   <p style={{ fontSize: "0.95rem", color: "var(--accent)", fontWeight: 700, marginTop: "0.35rem" }}>{formatPriceMad(line.priceMad)}</p>
                 </div>
-                <button type="button" className="btn-ghost" onClick={() => removeLine(line.id)} style={{ padding: "0.5rem", fontSize: "0.85rem", color: "#f87171" }}>
+                <button type="button" className="btn-ghost cart-line__remove" onClick={() => removeLine(line.id)} style={{ padding: "0.5rem", fontSize: "0.85rem", color: "#f87171" }}>
                   حذف
                 </button>
               </li>
@@ -58,7 +58,7 @@ export default function PanierView() {
             </div>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
+          <div className="cart-actions" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
             <button type="button" className="btn-whatsapp" onClick={checkout}>
               إرسال السلة عبر واتساب
             </button>

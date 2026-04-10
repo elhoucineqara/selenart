@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PRODUCT_IMAGES, PRODUCTS } from "@/lib/catalog";
+import { PRIMARY_PRODUCT_SLUG, PRODUCT_IMAGES, PRODUCTS } from "@/lib/catalog";
 import { formatPriceMad, minPriceForProduct } from "@/lib/pricing";
 import type { Metadata } from "next";
 
@@ -14,6 +14,7 @@ export default function HomePage() {
   const from = minPriceForProduct();
   const heroImg = PRODUCT_IMAGES.find((i) => i.id === "yellow") ?? PRODUCT_IMAGES[0];
   const featured = PRODUCTS[0];
+  const quickBuySlug = PRIMARY_PRODUCT_SLUG;
 
   return (
     <>
@@ -34,7 +35,7 @@ export default function HomePage() {
               <Link href="/boutique" className="btn-primary">
                 دخول المتجر
               </Link>
-              <Link href="/produit/lampe-selenite" className="btn-ghost home-hero__btn-outline">
+              <Link href={`/produit/${quickBuySlug}`} className="btn-ghost home-hero__btn-outline">
                 اطلب مباشرة
               </Link>
             </div>
@@ -53,8 +54,8 @@ export default function HomePage() {
             <p className="home-stats__label">صناعة يدوية</p>
           </div>
           <div className="glass-card home-stats__item">
-            <p className="home-stats__val">48 س</p>
-            <p className="home-stats__label">جاهزية للشحن</p>
+            <p className="home-stats__val">سريع</p>
+            <p className="home-stats__label">توصيل منزلي</p>
           </div>
           <div className="glass-card home-stats__item">
             <p className="home-stats__val">أطلس</p>
@@ -70,17 +71,22 @@ export default function HomePage() {
       <section className="home-strip reveal" aria-labelledby="home-strip-title">
         <div className="home-strip__head">
           <h2 id="home-strip-title" className="home-strip__title">
-            أجواء المنتج
+            استكشف المجموعات
           </h2>
-          <Link href="/galerie" className="btn-ghost" style={{ fontSize: "0.9rem" }}>
-            معرض كامل ←
+          <Link href="/boutique" className="btn-ghost" style={{ fontSize: "0.9rem" }}>
+            المتجر بالكامل ←
           </Link>
         </div>
-        <div className="home-strip__grid">
-          {PRODUCT_IMAGES.map((img) => (
-            <Link key={img.id} href="/galerie" className="home-strip__card">
-              <Image src={img.src} alt={img.alt} fill sizes="(max-width: 640px) 50vw, 25vw" style={{ objectFit: "cover" }} />
-              <span className="home-strip__caption">{img.caption}</span>
+        <div className="home-strip__grid home-strip__grid--products">
+          {PRODUCTS.slice(1, 5).map((p) => (
+            <Link key={p.slug} href={`/produit/${p.slug}`} className="product-card reveal" style={{ textDecoration: "none" }}>
+              <div className="product-card__media-container" style={{ aspectRatio: "1/1" }}>
+                <Image src={p.coverSrc} alt={p.title} fill sizes="(max-width: 640px) 100vw, 300px" style={{ objectFit: "cover" }} />
+              </div>
+              <div className="product-card__body" style={{ padding: "1rem" }}>
+                <h3 className="product-card__title" style={{ fontSize: "1rem" }}>{p.title}</h3>
+                <p className="product-card__price" style={{ margin: 0 }}>{formatPriceMad(from)}</p>
+              </div>
             </Link>
           ))}
         </div>
@@ -88,16 +94,17 @@ export default function HomePage() {
 
       <section className="home-featured reveal" aria-labelledby="home-featured-title">
         <h2 id="home-featured-title" className="store-section-title" style={{ marginBottom: "1.25rem" }}>
-          منتج مميز
+          الإصدار الفاخر
         </h2>
         <article className="glass-card home-featured__card">
           <div className="home-featured__media">
-            <Image src={featured.coverSrc} alt={featured.title} fill sizes="(max-width: 768px) 100vw, 400px" style={{ objectFit: "cover" }} />
+            <Image src={featured.coverSrc} alt={featured.title} fill sizes="(max-width: 768px) 100vw, 600px" style={{ objectFit: "cover" }} />
           </div>
           <div className="home-featured__body">
+            <span className="section-eyebrow">الأكثر مبيعاً</span>
             <h3 className="home-featured__heading">{featured.title}</h3>
             <p className="home-featured__text">{featured.summary}</p>
-            <p className="home-featured__price">من {formatPriceMad(from)}</p>
+            <p className="home-featured__price">يبدأ من {formatPriceMad(from)}</p>
             <div className="home-featured__actions">
               <Link href={`/produit/${featured.slug}`} className="btn-primary">
                 اكتشف الخيارات

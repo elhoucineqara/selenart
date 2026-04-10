@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import { PRIMARY_PRODUCT_HREF } from "@/lib/catalog";
 
 export default function Footer() {
   const [logoFailed, setLogoFailed] = useState(false);
@@ -39,7 +40,7 @@ export default function Footer() {
               المعرض
             </Link>
             {" · "}
-            <Link href="/produit/lampe-selenite" style={{ color: "var(--accent)", fontWeight: 600 }}>
+            <Link href={PRIMARY_PRODUCT_HREF} style={{ color: "var(--accent)", fontWeight: 600 }}>
               المنتج
             </Link>
           </p>

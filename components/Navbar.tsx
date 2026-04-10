@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { PRIMARY_PRODUCT_HREF } from "@/lib/catalog";
 
 const MAIN_LINKS = [
   { href: "/", label: "الرئيسية" },
@@ -80,7 +81,7 @@ export default function Navbar() {
                 السلة
                 {count > 0 ? <span className="site-nav__badge">{count > 9 ? "9+" : count}</span> : null}
               </Link>
-              <Link href="/produit/lampe-selenite" className="btn-primary site-nav__cta">
+              <Link href={PRIMARY_PRODUCT_HREF} className="btn-primary site-nav__cta">
                 شراء مصباح
               </Link>
             </div>
@@ -118,7 +119,7 @@ export default function Navbar() {
             {count > 0 ? <span className="site-nav__badge">{count > 9 ? "9+" : count}</span> : null}
           </Link>
           <div className="site-nav__mobile-cta">
-            <Link href="/produit/lampe-selenite" className="btn-primary site-nav__cta" style={{ width: "100%", justifyContent: "center" }} onClick={closeMobile}>
+            <Link href={PRIMARY_PRODUCT_HREF} className="btn-primary site-nav__cta" style={{ width: "100%", justifyContent: "center" }} onClick={closeMobile}>
               شراء مصباح
             </Link>
           </div>

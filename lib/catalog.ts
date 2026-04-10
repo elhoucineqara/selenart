@@ -93,6 +93,10 @@ export const PRODUCTS: StoreProduct[] = [
   },
 ];
 
+/** Produit vedette pour les CTA — une seule source de vérité (évite liens cassés et écarts SSR/client). */
+export const PRIMARY_PRODUCT_SLUG = PRODUCTS[0]!.slug;
+export const PRIMARY_PRODUCT_HREF = `/produit/${PRIMARY_PRODUCT_SLUG}`;
+
 export function getProductBySlug(slug: string): StoreProduct | undefined {
   return PRODUCTS.find((p) => p.slug === slug);
 }
